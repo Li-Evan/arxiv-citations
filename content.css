@@ -25,6 +25,11 @@
   opacity: 0.75;
 }
 
+.axc-sub-warn {
+  color: #b54708;
+  opacity: 1;
+}
+
 .axc-loading,
 .axc-missing {
   border-color: #ddd;
