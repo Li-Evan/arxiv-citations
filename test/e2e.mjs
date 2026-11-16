@@ -1,6 +1,7 @@
 // 用无头 Chromium 加载插件，打开真实 arXiv 页面检查徽标。不弹窗。
 // 运行：node test/e2e.mjs
 // 可选环境变量：PLAYWRIGHT_CORE（playwright-core 目录）、CHROME_PATH（Chrome for Testing 可执行文件）、OUT_DIR（截图目录）
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -10,7 +11,15 @@ const require = createRequire(import.meta.url);
 const EXT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const OUT = process.env.OUT_DIR || path.join(os.tmpdir(), 'arxiv-citations-e2e');
 const OPENALEX = 'https://api.openalex.org/**';
-const CORS = { 'access-control-allow-origin': '*', 'access-control-expose-headers': 'Retry-After', 'content-type': 'application/json' };
+const CORS = {
+  'access-control-allow-origin': '*',
+  'access-control-expose-headers': 'Retry-After, X-RateLimit-Limit-USD, X-RateLimit-Remaining-USD',
+  'content-type': 'application/json',
+};
+// 解压加载的插件，ID 由目录绝对路径的 sha256 前 32 位换成 a-p 得到
+const EXT_ID = [...crypto.createHash('sha256').update(fs.realpathSync(EXT)).digest('hex').slice(0, 32)]
+  .map(c => String.fromCharCode(97 + parseInt(c, 16))).join('');
+const OPTIONS = `chrome-extension://${EXT_ID}/options.html`;
 
 function findPlaywright() {
   const root = path.join(os.homedir(), '.npm/_npx');
@@ -145,6 +154,82 @@ await page.waitForFunction(() => {
 const retried = await readBadge();
 await shot('1706.03762-retry');
 check('点击错误徽标重试后恢复', /^被引 [\d,]+/.test(retried.text), retried);
+
+// ---------- 设置页：OpenAlex key ----------
+const opt = await ctx.newPage();
+await opt.setViewportSize({ width: 400, height: 640 });
+const storedKey = async () => (await opt.evaluate(() => chrome.storage.local.get('openalexKey'))).openalexKey;
+const submitKey = async key => {
+  await opt.fill('#key', key);
+  await opt.click('#save');
+  await opt.waitForFunction(() => /\b(ok|error)\b/.test(document.querySelector('#status').className), null, { timeout: 30000 });
+  return opt.locator('#status').textContent();
+};
+
+await opt.goto(OPTIONS);
+const saved0 = await opt.locator('#saved').textContent();
+await opt.screenshot({ path: path.join(OUT, 'options-empty.png'), fullPage: true });
+check('设置页能打开，显示还没填 key', saved0.includes('还没填 key'), { url: OPTIONS, saved0 });
+
+// 假 key 发给真实 OpenAlex，应被 401 拒绝且不保存
+let s = await submitKey('fake-test-key-000');
+check('假 key 被真实 OpenAlex 拒绝（401），不保存', s.includes('401') && s.includes('没有保存') && !(await storedKey()), { status: s });
+
+// 匿名请求一律 429；带对的 key 才正常返回；带错的 key 返回 401
+const GOOD = 'good-key-1234';
+const seen = [];
+await ctx.route(OPENALEX, route => {
+  const req = route.request();
+  if (req.method() === 'OPTIONS') {
+    return route.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'Authorization', 'access-control-allow-methods': 'GET' } });
+  }
+  const auth = req.headers()['authorization'] || '';
+  seen.push({ url: req.url(), auth });
+  if (!auth) return route.fulfill({ status: 429, headers: { ...CORS, 'retry-after': '120' }, body: '{"error":"Rate limit exceeded","message":"anonymous limited for test"}' });
+  if (auth !== `Bearer ${GOOD}`) return route.fulfill({ status: 401, headers: CORS, body: '{"error":"Invalid or missing API key","message":"API key not found."}' });
+  if (req.url().includes('/works/W2626778328')) {
+    return route.fulfill({ status: 200, headers: { ...CORS, 'x-ratelimit-limit-usd': '1', 'x-ratelimit-remaining-usd': '0.9835' }, body: '{"id":"https://openalex.org/W2626778328"}' });
+  }
+  if (req.url().includes('/works/doi:')) return route.fulfill({ status: 200, headers: CORS, body: JSON.stringify(fakeWork) });
+  return route.fulfill({ status: 200, headers: CORS, body: '{"meta":{"count":0},"results":[]}' });
+});
+
+r = await badge('2611.17464');
+check('匿名限流时徽标提示去设置页填 key', r.text === '被引 ⚠' && r.title.includes('填一个免费的 OpenAlex key'), r);
+
+await opt.bringToFront();
+seen.length = 0;
+s = await submitKey(GOOD);
+await opt.screenshot({ path: path.join(OUT, 'options-saved.png'), fullPage: true });
+const saved1 = await opt.locator('#saved').textContent();
+check('能用的 key 校验通过后保存，显示额度和尾号', s.includes('key 可用') && s.includes('每天额度 $1') && s.includes('今天还剩 $0.98') && saved1.includes('尾号 1234') && (await storedKey()) === GOOD, { status: s, saved1 });
+
+await page.bringToFront();
+await page.waitForFunction(() => {
+  const c = document.querySelector('.axc-badge').classList;
+  return c.contains('axc-ok') && !c.contains('axc-merging');
+}, null, { timeout: 30000 });
+const after = await readBadge();
+const leaked = seen.filter(x => x.url.includes(GOOD) || x.url.includes('api_key'));
+const arxivCalls = seen.filter(x => !x.url.includes('/works/W2626778328'));
+check('保存 key 后打开着的页面自动重查，请求都带 key 且 key 不进网址',
+  after.text === '被引 42' && arxivCalls.length >= 2 && arxivCalls.every(x => x.auth === `Bearer ${GOOD}`) && !leaked.length,
+  { after: after.text, arxivCalls, leaked });
+
+// 已保存的 key 后来失效：徽标提示去设置页
+await opt.evaluate(() => chrome.storage.local.set({ openalexKey: 'revoked-key-5678' }));
+r = await badge('2611.17465');
+check('已保存的 key 失效时徽标提示去设置页', r.text === '被引 ⚠' && r.title.includes('401') && r.title.includes('设置里填的 OpenAlex key 用不了'), r);
+
+await opt.bringToFront();
+await opt.reload();
+await opt.click('#clear');
+await opt.waitForFunction(() => document.querySelector('#saved').textContent.includes('还没填 key'));
+check('清除 key 后回到匿名额度', !(await storedKey()), { saved: await opt.locator('#saved').textContent() });
+
+await opt.emulateMedia({ colorScheme: 'dark' });
+await opt.screenshot({ path: path.join(OUT, 'options-dark.png'), fullPage: true });
+await ctx.unroute(OPENALEX);
 
 await ctx.close();
 fs.rmSync(profile, { recursive: true, force: true });

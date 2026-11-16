@@ -3,6 +3,9 @@ const FIELDS = 'id,display_name,cited_by_count,publication_year,authorships,prim
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 const TIMEOUT = 20000;
 const MAX_RETRY_WAIT = 60;
+const KEY_NAME = 'openalexKey';
+const SETTINGS_HINT = '点浏览器右上角拼图图标里的「arXiv 引用次数」打开设置';
+let apiKey = '';
 
 const metas = name => [...document.querySelectorAll(`meta[name="${name}"]`)].map(m => m.content);
 
@@ -16,7 +19,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function getJSON(url) {
   let res;
   try {
-    res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT) });
+    res = await fetch(url, {
+      headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
+      signal: AbortSignal.timeout(TIMEOUT),
+    });
   } catch (err) {
     throw new Error(err.name === 'TimeoutError' ? `OpenAlex ${TIMEOUT / 1000} 秒没响应` : `连不上 OpenAlex：${err.message}`);
   }
@@ -25,7 +31,10 @@ async function getJSON(url) {
     const text = await res.text();
     let body = {};
     try { body = JSON.parse(text); } catch {}
-    const err = new Error(`OpenAlex 返回 ${res.status}：${body.message || text.slice(0, 200)}`);
+    let hint = '';
+    if (apiKey && (res.status === 401 || res.status === 403)) hint = `\n设置里填的 OpenAlex key 用不了，${SETTINGS_HINT}，重新填或清除`;
+    if (!apiKey && res.status === 429) hint = `\n填一个免费的 OpenAlex key 可以避开匿名限流，${SETTINGS_HINT}`;
+    const err = new Error(`OpenAlex 返回 ${res.status}：${body.message || text.slice(0, 200)}${hint}`);
     err.retryAfter = Number(res.headers.get('retry-after')) || body.retryAfter || 0;
     throw err;
   }
@@ -129,12 +138,18 @@ async function main() {
   badge.target = '_blank';
   badge.rel = 'noopener';
   h1.append(badge);
+  apiKey = (await chrome.storage.local.get(KEY_NAME))[KEY_NAME] || '';
 
+  let settled = false;
   const run = async force => {
     if (!force) {
       const hit = (await chrome.storage.local.get(key))[key];
-      if (hit && Date.now() - hit.fetchedAt < CACHE_TTL) return render(badge, hit);
+      if (hit && Date.now() - hit.fetchedAt < CACHE_TTL) {
+        settled = true;
+        return render(badge, hit);
+      }
     }
+    settled = false;
     render(badge, { status: 'loading' });
 
     let partial = null;
@@ -147,6 +162,7 @@ async function main() {
       const result = await mergeWithRetry(main, title, authors, note =>
         render(badge, partial ? { ...partial, merging: note } : { status: 'loading', note }));
       await chrome.storage.local.set({ [key]: result });
+      settled = true;
       render(badge, result);
     } catch (err) {
       console.error('[arXiv 引用次数]', err);
@@ -158,6 +174,13 @@ async function main() {
     if (badge.classList.contains('axc-ok')) return;
     e.preventDefault();
     run(true);
+  });
+
+  // 设置页保存或清除 key 后，没查成功的徽标（报错或未合并）自动重查
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'local' || !(KEY_NAME in changes)) return;
+    apiKey = changes[KEY_NAME].newValue || '';
+    if (!settled && !badge.classList.contains('axc-loading') && !badge.classList.contains('axc-merging')) run(true);
   });
   run(false);
 }
