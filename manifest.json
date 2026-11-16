@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "arXiv 引用次数",
+  "version": "0.1.0",
+  "description": "在 arXiv 论文摘要页的标题右边显示引用次数。数据来自 OpenAlex，预印本和正式发表版本合并去重。",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://arxiv.org/abs/*", "https://www.arxiv.org/abs/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

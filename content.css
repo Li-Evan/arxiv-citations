@@ -1,0 +1,39 @@
+.axc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
+  padding: 2px 12px;
+  border: 1px solid #c9d7ff;
+  border-radius: 999px;
+  background: #eef3ff;
+  color: #1f4fd1 !important;
+  font: 600 15px/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+.axc-badge:hover {
+  background: #dfe8ff;
+}
+
+.axc-sub {
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.axc-loading,
+.axc-missing {
+  border-color: #ddd;
+  background: #f4f4f4;
+  color: #777 !important;
+}
+
+.axc-error {
+  border-color: #fecdca;
+  background: #fef3f2;
+  color: #b42318 !important;
+}
