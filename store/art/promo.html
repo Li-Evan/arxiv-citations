@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 440px; height: 280px; overflow: hidden; background: linear-gradient(135deg, #3d7bff, #1f4fd1); position: relative; }
+  .card { position: absolute; left: 30px; top: 46px; width: 262px; height: 188px; background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(10, 30, 90, .35); padding: 22px 20px; }
+  .bar { height: 12px; border-radius: 6px; background: #1d2433; opacity: .85; }
+  .line { height: 7px; border-radius: 4px; background: #d0d5dd; margin-top: 10px; }
+  .row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .pill { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: #eef3ff; border: 1.5px solid #9db5ff; }
+  .pill i { display: block; height: 8px; border-radius: 4px; background: #1f4fd1; }
+  .big { position: absolute; right: 24px; top: 70px; width: 108px; height: 108px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="bar" style="width: 92%"></div>
+    <div class="row">
+      <div class="bar" style="width: 44%"></div>
+      <div class="pill">
+        <svg width="16" height="16" viewBox="34 42 60 50"><g fill="#1f4fd1"><circle cx="48" cy="56" r="12"/><path d="M60 56 Q60 82 39.6 88.4 Q50.4 76.4 47.4 67.8 Z"/><circle cx="80" cy="56" r="12"/><path d="M92 56 Q92 82 71.6 88.4 Q82.4 76.4 79.4 67.8 Z"/></g></svg>
+        <i style="width: 40px"></i>
+      </div>
+    </div>
+    <div class="line" style="width: 60%; margin-top: 16px; background: #9db5ff"></div>
+    <div class="line" style="width: 100%; margin-top: 18px"></div>
+    <div class="line" style="width: 96%"></div>
+    <div class="line" style="width: 98%"></div>
+    <div class="line" style="width: 70%"></div>
+  </div>
+  <svg class="big" viewBox="34 42 60 50"><g fill="#ffffff"><circle cx="48" cy="56" r="12"/><path d="M60 56 Q60 82 39.6 88.4 Q50.4 76.4 47.4 67.8 Z"/><circle cx="80" cy="56" r="12"/><path d="M92 56 Q92 82 71.6 88.4 Q82.4 76.4 79.4 67.8 Z"/></g></svg>
+</body>
+</html>

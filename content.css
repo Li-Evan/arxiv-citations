@@ -30,6 +30,10 @@
   opacity: 1;
 }
 
+.axc-consent {
+  border-style: dashed;
+}
+
 .axc-loading,
 .axc-missing {
   border-color: #ddd;

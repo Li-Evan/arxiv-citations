@@ -1,107 +1,47 @@
 <!doctype html>
-<html lang="zh-CN">
+<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>arXiv 引用次数 · 设置</title>
-  <style>
-    :root {
-      --bg: #ffffff;
-      --fg: #1d2433;
-      --muted: #667085;
-      --line: #e4e7ec;
-      --accent: #1f4fd1;
-      --accent-bg: #eef3ff;
-      --ok: #067647;
-      --ok-bg: #ecfdf3;
-      --err: #b42318;
-      --err-bg: #fef3f2;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #16181d;
-        --fg: #e6e8ec;
-        --muted: #98a2b3;
-        --line: #2f3440;
-        --accent: #8fb0ff;
-        --accent-bg: #1f2a44;
-        --ok: #75e0a7;
-        --ok-bg: #11291d;
-        --err: #fda29b;
-        --err-bg: #2d1414;
-      }
-    }
-    * { box-sizing: border-box; }
-    body {
-      min-width: 360px;
-      max-width: 560px;
-      margin: 0 auto;
-      padding: 20px;
-      background: var(--bg);
-      color: var(--fg);
-      font: 14px/1.65 -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
-    }
-    h1 { margin: 0 0 4px; font-size: 18px; }
-    .lead { margin: 0 0 16px; color: var(--muted); }
-    h2 { margin: 0 0 8px; font-size: 15px; }
-    ol { margin: 0 0 14px; padding-left: 20px; }
-    a { color: var(--accent); }
-    label { display: block; margin-bottom: 6px; font-weight: 600; }
-    input {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--bg);
-      color: var(--fg);
-      font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-    input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-    .row { display: flex; gap: 8px; margin-top: 10px; }
-    button {
-      padding: 7px 14px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--bg);
-      color: var(--fg);
-      font: inherit;
-      cursor: pointer;
-    }
-    button.primary { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); font-weight: 600; }
-    button:disabled { opacity: 0.6; cursor: default; }
-    .saved { margin: 12px 0 0; color: var(--muted); }
-    .status { margin-top: 12px; padding: 8px 10px; border-radius: 8px; white-space: pre-wrap; }
-    .status:empty { display: none; }
-    .status.ok { background: var(--ok-bg); color: var(--ok); }
-    .status.error { background: var(--err-bg); color: var(--err); }
-    .status.pending { background: var(--accent-bg); color: var(--accent); }
-    .note { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
-  </style>
+  <title>Citation Counts for arXiv</title>
+  <link rel="stylesheet" href="page.css">
 </head>
 <body>
-  <h1>arXiv 引用次数 · 设置</h1>
-  <p class="lead">不填 key 也能用。不带 key 时 OpenAlex 的搜索常被限流，徽标上的「未合并」多半是这个原因。填一个免费 key 后，每天有 1 美元额度，也不受匿名限流影响。</p>
+  <div class="brand">
+    <img src="icons/icon128.png" alt="">
+    <h1 data-i18n="optTitle"></h1>
+  </div>
 
-  <h2>怎么拿到免费 key</h2>
+  <h2 data-i18n="optConsentHeading"></h2>
+  <p id="consentState" class="muted"></p>
+  <div class="row">
+    <a id="enable" href="welcome.html" target="_blank" data-i18n="optConsentEnable" hidden></a>
+    <button id="withdraw" type="button" data-i18n="optWithdraw" hidden></button>
+  </div>
+
+  <h2 data-i18n="optKeyHeading"></h2>
+  <p class="lead" data-i18n="optLead"></p>
+  <p><strong data-i18n="optHowHeading"></strong></p>
   <ol>
-    <li>在 <a href="https://openalex.org/signup" target="_blank" rel="noopener">openalex.org</a> 注册账号</li>
-    <li>去邮箱点 OpenAlex 发来的激活链接</li>
-    <li>在 <a href="https://openalex.org/settings/api-key" target="_blank" rel="noopener">Settings → API key</a> 复制 key，粘贴到下面</li>
+    <li data-i18n-html="optStep1"></li>
+    <li data-i18n="optStep2"></li>
+    <li data-i18n-html="optStep3"></li>
   </ol>
 
   <form id="form">
-    <label for="key">OpenAlex API key</label>
-    <input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="粘贴 key">
+    <label for="key" data-i18n="optKeyLabel"></label>
+    <input id="key" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="optKeyPlaceholder">
     <div class="row">
-      <button id="save" class="primary" type="submit">校验并保存</button>
-      <button id="clear" type="button" hidden>清除已保存的 key</button>
+      <button id="save" class="primary" type="submit" data-i18n="optSave"></button>
+      <button id="clear" type="button" data-i18n="optClear" hidden></button>
     </div>
   </form>
-  <p id="saved" class="saved"></p>
+  <p id="saved" class="muted"></p>
   <div id="status" class="status" role="status"></div>
 
-  <p class="note">key 只存在这台电脑的浏览器里，只通过请求头发给 api.openalex.org，不写进网址。保存前会先拿它查一篇论文，确认能用才保存，这次查询不花额度。</p>
+  <p class="note"><span data-i18n="optNote"></span><br><span data-i18n-html="optFooter"></span></p>
 
+  <script src="i18n.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

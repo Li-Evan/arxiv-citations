@@ -1,5 +1,6 @@
 const API = 'https://api.openalex.org';
 const KEY = 'openalexKey';
+const CONSENT = 'consent';
 const $ = id => document.getElementById(id);
 
 function status(text, kind) {
@@ -9,8 +10,16 @@ function status(text, kind) {
 
 async function showSaved() {
   const key = (await chrome.storage.local.get(KEY))[KEY];
-  $('saved').textContent = key ? `已保存 key，尾号 ${key.slice(-4)}` : '还没填 key，现在用的是匿名额度';
+  $('saved').textContent = key ? t('optSavedYes', { tail: key.slice(-4) }) : t('optSavedNo');
   $('clear').hidden = !key;
+}
+
+async function showConsent() {
+  const consent = (await chrome.storage.local.get(CONSENT))[CONSENT];
+  const time = consent && new Date(consent.at).toLocaleString(uiLang(), { hour12: false });
+  $('consentState').textContent = consent ? t('optConsentOn', { time }) : t('optConsentOff');
+  $('enable').hidden = Boolean(consent);
+  $('withdraw').hidden = !consent;
 }
 
 // 按编号查单篇不花额度，响应头里带着当天额度和剩余额度
@@ -22,7 +31,7 @@ async function check(key) {
       signal: AbortSignal.timeout(20000),
     });
   } catch (err) {
-    throw new Error(err.name === 'TimeoutError' ? 'OpenAlex 20 秒没响应，稍后再试' : `连不上 OpenAlex：${err.message}`);
+    throw new Error(err.name === 'TimeoutError' ? t('optErrTimeout') : t('errNetwork', { msg: err.message }));
   }
   if (res.ok) {
     return {
@@ -34,29 +43,29 @@ async function check(key) {
   let body = {};
   try { body = JSON.parse(text); } catch {}
   const reason = body.message || body.error || text.slice(0, 200);
-  if (res.status === 401) throw new Error(`OpenAlex 找不到这个 key（401）。检查是否复制完整，或者去 OpenAlex 的 Settings → API key 重新复制`);
-  if (res.status === 403) throw new Error(`OpenAlex 拒绝了这个 key（403，${body.error || body.code || reason}）。刚注册的话，先去邮箱点激活链接`);
-  if (res.status === 429) throw new Error(`OpenAlex 限流（429），稍后再试：${reason}`);
-  throw new Error(`OpenAlex 返回 ${res.status}：${reason}`);
+  if (res.status === 401) throw new Error(t('optErr401'));
+  if (res.status === 403) throw new Error(t('optErr403', { code: body.error || body.code || reason }));
+  if (res.status === 429) throw new Error(t('optErr429', { reason }));
+  throw new Error(t('errStatus', { status: res.status, msg: reason }));
 }
 
-const usd = x => `$${Number(x).toFixed(2).replace(/\.00$/, '')}`;
+const money = x => Number(x).toFixed(2).replace(/\.00$/, '');
 
 $('form').addEventListener('submit', async e => {
   e.preventDefault();
   const key = $('key').value.trim();
-  if (!key) return status('先把 key 粘贴进输入框', 'error');
+  if (!key) return status(t('optEmpty'), 'error');
   $('save').disabled = true;
-  status('正在向 OpenAlex 校验…', 'pending');
+  status(t('optChecking'), 'pending');
   try {
     const r = await check(key);
     await chrome.storage.local.set({ [KEY]: key });
     $('key').value = '';
-    const quota = r.limit ? `：每天额度 ${usd(r.limit)}，今天还剩 ${usd(r.remaining)}` : '';
-    status(`key 可用${quota}。已保存，打开着的 arXiv 页面里没查成功的徽标会自动重查。`, 'ok');
+    const quota = r.limit ? t('optQuota', { limit: money(r.limit), remaining: money(r.remaining) }) : '';
+    status(t('optKeyOk', { quota }), 'ok');
     await showSaved();
   } catch (err) {
-    status(`${err.message}。没有保存。`, 'error');
+    status(t('optNotSaved', { reason: err.message }), 'error');
   } finally {
     $('save').disabled = false;
   }
@@ -64,8 +73,22 @@ $('form').addEventListener('submit', async e => {
 
 $('clear').addEventListener('click', async () => {
   await chrome.storage.local.remove(KEY);
-  status('已清除，回到匿名额度。', 'ok');
+  status(t('optCleared'), 'ok');
   await showSaved();
 });
 
+// 撤回同意时一并清掉本机缓存的查询结果
+$('withdraw').addEventListener('click', async () => {
+  const all = await chrome.storage.local.get(null);
+  await chrome.storage.local.remove([CONSENT, ...Object.keys(all).filter(k => k.startsWith('axc:'))]);
+  status(t('optWithdrawn'), 'ok');
+});
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && CONSENT in changes) showConsent();
+});
+
+applyI18n();
+document.title = t('optTitle');
+showConsent();
 showSaved();

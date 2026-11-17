@@ -1,0 +1,218 @@
+{
+  "extName": {
+    "message": "Citation Counts for arXiv"
+  },
+  "extDescription": {
+    "message": "Shows citation counts next to arXiv paper titles. Data from OpenAlex; preprint and published versions are merged."
+  },
+  "actionTitle": {
+    "message": "Citation Counts for arXiv · Settings"
+  },
+  "badgeLabel": {
+    "message": "Cited by"
+  },
+  "badgeMissing": {
+    "message": "Citations: not indexed yet"
+  },
+  "badgeConsent": {
+    "message": "Citations · click to enable"
+  },
+  "subMerging": {
+    "message": "checking other versions…"
+  },
+  "subUnmerged": {
+    "message": "not merged"
+  },
+  "subMerged": {
+    "message": "{n} versions merged"
+  },
+  "tipLoading": {
+    "message": "Looking up citations on OpenAlex…"
+  },
+  "tipHeader": {
+    "message": "Citations in OpenAlex"
+  },
+  "tipHeaderMerged": {
+    "message": "Citations in OpenAlex: papers citing any version, each counted once"
+  },
+  "tipMerging": {
+    "message": "This is the count for the arXiv record only. Looking for other published versions of this paper."
+  },
+  "tipMergeFailed": {
+    "message": "Counted the arXiv record only. Looking for other published versions failed: {reason}\nReload the page to try again."
+  },
+  "tipDataTime": {
+    "message": "Data from {time} (cached for 12 hours)"
+  },
+  "tipOpenList": {
+    "message": "Click to see the citing papers"
+  },
+  "tipMissing": {
+    "message": "OpenAlex hasn't indexed this paper yet. New papers usually appear within a few days to two weeks.\nChecked {time}. Click to check again."
+  },
+  "tipError": {
+    "message": "Lookup failed: {reason}\nClick to retry."
+  },
+  "tipConsent": {
+    "message": "To work, this extension sends the paper's arXiv ID and title to OpenAlex, and it needs your OK first. Click to see the details and enable it."
+  },
+  "venueUnknown": {
+    "message": "unknown venue"
+  },
+  "errTimeout": {
+    "message": "OpenAlex did not respond within {s} seconds"
+  },
+  "errNetwork": {
+    "message": "Could not reach OpenAlex: {msg}"
+  },
+  "errStatus": {
+    "message": "OpenAlex returned {status}: {msg}"
+  },
+  "hintBadKey": {
+    "message": "The OpenAlex key in settings was rejected. {settings} to replace or remove it."
+  },
+  "hintGetKey": {
+    "message": "A free OpenAlex key avoids the anonymous rate limit. {settings} to add one."
+  },
+  "settingsHint": {
+    "message": "Open settings from the puzzle-piece icon in the toolbar"
+  },
+  "retryWait": {
+    "message": "OpenAlex search is rate-limited; retrying in {s} seconds"
+  },
+  "welcomeTitle": {
+    "message": "Welcome to Citation Counts for arXiv"
+  },
+  "welcomeIntro": {
+    "message": "When you open an arXiv abstract page, the number of times the paper has been cited appears next to its title."
+  },
+  "welcomeDataHeading": {
+    "message": "Before you start: what this extension sends"
+  },
+  "welcomeData1": {
+    "message": "It only runs on arXiv abstract pages (arxiv.org/abs/…) and reads nothing on other sites."
+  },
+  "welcomeData2": {
+    "message": "On those pages it reads the paper's arXiv ID, title and author names."
+  },
+  "welcomeData3": {
+    "message": "It sends the arXiv ID and title to OpenAlex (api.openalex.org), a free and open database of scholarly works, to look up citations. Author names are only compared on your computer and are never sent."
+  },
+  "welcomeData4": {
+    "message": "Like any website, OpenAlex sees your IP address. If you add an OpenAlex key in settings, the key is sent to OpenAlex with each request."
+  },
+  "welcomeData5": {
+    "message": "Results are cached on your computer for 12 hours. The developer runs no server and collects, tracks or sells nothing."
+  },
+  "welcomePrivacy": {
+    "message": "Full details are in the <a href=\"https://github.com/Li-Evan/arxiv-citations/blob/main/PRIVACY.md\" target=\"_blank\" rel=\"noopener\">privacy policy</a>. You can withdraw your consent at any time in settings."
+  },
+  "welcomeAgree": {
+    "message": "Agree and start"
+  },
+  "welcomeDecline": {
+    "message": "Not now"
+  },
+  "welcomeAgreed": {
+    "message": "Enabled. Go back to arXiv to see citation counts; pages you already have open update by themselves. You can close this tab."
+  },
+  "welcomeDeclined": {
+    "message": "OK, nothing will be sent. To enable it later, click “Citations · click to enable” on any arXiv abstract page."
+  },
+  "notAffiliated": {
+    "message": "Not affiliated with arXiv or OpenAlex."
+  },
+  "optTitle": {
+    "message": "Citation Counts for arXiv · Settings"
+  },
+  "optConsentHeading": {
+    "message": "Sending data to OpenAlex"
+  },
+  "optConsentOn": {
+    "message": "Enabled since {time}. The extension sends the arXiv ID and title of the paper you are viewing to OpenAlex."
+  },
+  "optConsentOff": {
+    "message": "Not enabled. The extension sends nothing until you agree."
+  },
+  "optConsentEnable": {
+    "message": "See what is sent and enable"
+  },
+  "optWithdraw": {
+    "message": "Withdraw consent"
+  },
+  "optWithdrawn": {
+    "message": "Consent withdrawn. Nothing will be sent, and cached results on this computer were deleted."
+  },
+  "optKeyHeading": {
+    "message": "OpenAlex API key (optional)"
+  },
+  "optLead": {
+    "message": "A key is optional. Without one, OpenAlex often rate-limits searches, which is usually why a badge says “not merged”. A free key gives you USD 1 of usage a day and is not affected by the anonymous limit."
+  },
+  "optHowHeading": {
+    "message": "Getting a free key"
+  },
+  "optStep1": {
+    "message": "Sign up at <a href=\"https://openalex.org/signup\" target=\"_blank\" rel=\"noopener\">openalex.org</a>"
+  },
+  "optStep2": {
+    "message": "Click the activation link OpenAlex emails you"
+  },
+  "optStep3": {
+    "message": "Copy the key from <a href=\"https://openalex.org/settings/api-key\" target=\"_blank\" rel=\"noopener\">Settings → API key</a> and paste it below"
+  },
+  "optKeyLabel": {
+    "message": "OpenAlex API key"
+  },
+  "optKeyPlaceholder": {
+    "message": "Paste your key"
+  },
+  "optSave": {
+    "message": "Check and save"
+  },
+  "optClear": {
+    "message": "Remove saved key"
+  },
+  "optSavedYes": {
+    "message": "Key saved, ending in {tail}"
+  },
+  "optSavedNo": {
+    "message": "No key saved; using the anonymous allowance"
+  },
+  "optNote": {
+    "message": "Your key stays in this browser on this computer. It is sent only to api.openalex.org, in a request header, never in a URL. Before saving, the extension checks it by looking up one paper, which costs nothing."
+  },
+  "optEmpty": {
+    "message": "Paste a key into the box first"
+  },
+  "optChecking": {
+    "message": "Checking with OpenAlex…"
+  },
+  "optKeyOk": {
+    "message": "The key works{quota}. Saved; badges that failed on open arXiv pages will retry by themselves."
+  },
+  "optQuota": {
+    "message": ": USD {limit} a day, USD {remaining} left today"
+  },
+  "optNotSaved": {
+    "message": "{reason}. Not saved."
+  },
+  "optErr401": {
+    "message": "OpenAlex doesn't recognize this key (401). Check that you copied all of it, or copy it again from Settings → API key on OpenAlex"
+  },
+  "optErr403": {
+    "message": "OpenAlex rejected this key (403, {code}). If you just signed up, click the activation link in your email first"
+  },
+  "optErr429": {
+    "message": "OpenAlex is rate-limiting requests (429); try again shortly: {reason}"
+  },
+  "optErrTimeout": {
+    "message": "OpenAlex did not respond within 20 seconds; try again later"
+  },
+  "optCleared": {
+    "message": "Key removed; using the anonymous allowance again."
+  },
+  "optFooter": {
+    "message": "<a href=\"https://github.com/Li-Evan/arxiv-citations/blob/main/PRIVACY.md\" target=\"_blank\" rel=\"noopener\">Privacy policy</a> · Not affiliated with arXiv or OpenAlex."
+  }
+}

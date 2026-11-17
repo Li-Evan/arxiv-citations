@@ -1,12 +1,27 @@
 {
   "manifest_version": 3,
-  "name": "arXiv 引用次数",
-  "version": "0.2.0",
-  "description": "在 arXiv 论文摘要页的标题右边显示引用次数。数据来自 OpenAlex，预印本和正式发表版本合并去重。",
+  "name": "__MSG_extName__",
+  "version": "0.3.0",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
+  "homepage_url": "https://github.com/Li-Evan/arxiv-citations",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
-    "default_title": "arXiv 引用次数 · 设置",
-    "default_popup": "options.html"
+    "default_title": "__MSG_actionTitle__",
+    "default_popup": "options.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
   },
   "options_ui": {
     "page": "options.html",
@@ -15,7 +30,7 @@
   "content_scripts": [
     {
       "matches": ["https://arxiv.org/abs/*", "https://www.arxiv.org/abs/*"],
-      "js": ["content.js"],
+      "js": ["i18n.js", "content.js"],
       "css": ["content.css"],
       "run_at": "document_idle"
     }

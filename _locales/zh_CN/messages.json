@@ -1,0 +1,218 @@
+{
+  "extName": {
+    "message": "arXiv 引用次数"
+  },
+  "extDescription": {
+    "message": "在 arXiv 论文摘要页的标题右边显示引用次数。数据来自 OpenAlex，预印本和正式发表版本合并去重。"
+  },
+  "actionTitle": {
+    "message": "arXiv 引用次数 · 设置"
+  },
+  "badgeLabel": {
+    "message": "被引"
+  },
+  "badgeMissing": {
+    "message": "被引 未收录"
+  },
+  "badgeConsent": {
+    "message": "被引 · 点击启用"
+  },
+  "subMerging": {
+    "message": "查找其他版本…"
+  },
+  "subUnmerged": {
+    "message": "未合并"
+  },
+  "subMerged": {
+    "message": "合并 {n} 个版本"
+  },
+  "tipLoading": {
+    "message": "正在从 OpenAlex 查询引用次数"
+  },
+  "tipHeader": {
+    "message": "OpenAlex 引用次数"
+  },
+  "tipHeaderMerged": {
+    "message": "OpenAlex 引用次数：引用了任一版本的论文去重计数"
+  },
+  "tipMerging": {
+    "message": "只显示了 arXiv 这条记录的数字，正在查找同一论文的其他发表版本。"
+  },
+  "tipMergeFailed": {
+    "message": "只统计了 arXiv 这一条记录，查找其他发表版本失败：{reason}\n刷新页面会重试"
+  },
+  "tipDataTime": {
+    "message": "数据时间 {time}（缓存 12 小时）"
+  },
+  "tipOpenList": {
+    "message": "点击查看引用了这篇论文的列表"
+  },
+  "tipMissing": {
+    "message": "OpenAlex 还没收录这篇论文，新论文一般要几天到两周才收录。\n数据时间 {time}，点击重新查询"
+  },
+  "tipError": {
+    "message": "查询失败：{reason}\n点击重试"
+  },
+  "tipConsent": {
+    "message": "启用前需要你同意：插件会把这篇论文的 arXiv 编号和标题发给 OpenAlex 查询引用次数。点击查看说明并启用。"
+  },
+  "venueUnknown": {
+    "message": "来源未知"
+  },
+  "errTimeout": {
+    "message": "OpenAlex {s} 秒没响应"
+  },
+  "errNetwork": {
+    "message": "连不上 OpenAlex：{msg}"
+  },
+  "errStatus": {
+    "message": "OpenAlex 返回 {status}：{msg}"
+  },
+  "hintBadKey": {
+    "message": "设置里填的 OpenAlex key 用不了，{settings}，重新填或清除"
+  },
+  "hintGetKey": {
+    "message": "填一个免费的 OpenAlex key 可以避开匿名限流，{settings}"
+  },
+  "settingsHint": {
+    "message": "点浏览器右上角拼图图标里的「arXiv 引用次数」打开设置"
+  },
+  "retryWait": {
+    "message": "OpenAlex 搜索限流，{s} 秒后自动重试"
+  },
+  "welcomeTitle": {
+    "message": "欢迎使用 arXiv 引用次数"
+  },
+  "welcomeIntro": {
+    "message": "打开 arXiv 论文摘要页时，标题右边会显示这篇论文被引用了多少次。"
+  },
+  "welcomeDataHeading": {
+    "message": "开始前，请看一下插件会发送哪些数据"
+  },
+  "welcomeData1": {
+    "message": "只在 arxiv.org/abs/ 开头的论文摘要页运行，其他网站一概不读。"
+  },
+  "welcomeData2": {
+    "message": "在这些页面上，插件会读取论文的 arXiv 编号、标题和作者名。"
+  },
+  "welcomeData3": {
+    "message": "插件把 arXiv 编号和标题发给 OpenAlex（api.openalex.org，一个免费开放的学术数据库）查询引用次数。作者名只在你的电脑上比对，不会发送。"
+  },
+  "welcomeData4": {
+    "message": "和访问任何网站一样，OpenAlex 能看到你的 IP 地址。如果你在设置里填了 OpenAlex key，key 也会随请求发给 OpenAlex。"
+  },
+  "welcomeData5": {
+    "message": "查询结果在你的电脑上缓存 12 小时。插件作者没有服务器，不收集、不统计、不出售任何数据。"
+  },
+  "welcomePrivacy": {
+    "message": "完整说明见<a href=\"https://github.com/Li-Evan/arxiv-citations/blob/main/PRIVACY.md\" target=\"_blank\" rel=\"noopener\">隐私政策</a>。随时可以在设置里撤回同意。"
+  },
+  "welcomeAgree": {
+    "message": "同意并开始使用"
+  },
+  "welcomeDecline": {
+    "message": "暂不使用"
+  },
+  "welcomeAgreed": {
+    "message": "已启用。回到 arXiv 页面就能看到引用次数，已经打开的页面会自动更新。可以关掉这个页面了。"
+  },
+  "welcomeDeclined": {
+    "message": "好的，插件不会发送任何数据。之后想启用，在任意 arXiv 摘要页点「被引 · 点击启用」即可。"
+  },
+  "notAffiliated": {
+    "message": "本插件与 arXiv、OpenAlex 均无关联。"
+  },
+  "optTitle": {
+    "message": "arXiv 引用次数 · 设置"
+  },
+  "optConsentHeading": {
+    "message": "向 OpenAlex 发送数据"
+  },
+  "optConsentOn": {
+    "message": "已于 {time} 同意。插件会把你正在看的论文的 arXiv 编号和标题发给 OpenAlex。"
+  },
+  "optConsentOff": {
+    "message": "还没同意，插件不会发送任何数据。"
+  },
+  "optConsentEnable": {
+    "message": "查看说明并启用"
+  },
+  "optWithdraw": {
+    "message": "撤回同意"
+  },
+  "optWithdrawn": {
+    "message": "已撤回同意。插件不再发送数据，本机缓存的查询结果也已清除。"
+  },
+  "optKeyHeading": {
+    "message": "OpenAlex API key（可选）"
+  },
+  "optLead": {
+    "message": "不填 key 也能用。不带 key 时 OpenAlex 的搜索常被限流，徽标上的「未合并」多半是这个原因。填一个免费 key 后，每天有 1 美元额度，也不受匿名限流影响。"
+  },
+  "optHowHeading": {
+    "message": "怎么拿到免费 key"
+  },
+  "optStep1": {
+    "message": "在 <a href=\"https://openalex.org/signup\" target=\"_blank\" rel=\"noopener\">openalex.org</a> 注册账号"
+  },
+  "optStep2": {
+    "message": "去邮箱点 OpenAlex 发来的激活链接"
+  },
+  "optStep3": {
+    "message": "在 <a href=\"https://openalex.org/settings/api-key\" target=\"_blank\" rel=\"noopener\">Settings → API key</a> 复制 key，粘贴到下面"
+  },
+  "optKeyLabel": {
+    "message": "OpenAlex API key"
+  },
+  "optKeyPlaceholder": {
+    "message": "粘贴 key"
+  },
+  "optSave": {
+    "message": "校验并保存"
+  },
+  "optClear": {
+    "message": "清除已保存的 key"
+  },
+  "optSavedYes": {
+    "message": "已保存 key，尾号 {tail}"
+  },
+  "optSavedNo": {
+    "message": "还没填 key，现在用的是匿名额度"
+  },
+  "optNote": {
+    "message": "key 只存在这台电脑的浏览器里，只通过请求头发给 api.openalex.org，不写进网址。保存前会先拿它查一篇论文，确认能用才保存，这次查询不花额度。"
+  },
+  "optEmpty": {
+    "message": "先把 key 粘贴进输入框"
+  },
+  "optChecking": {
+    "message": "正在向 OpenAlex 校验…"
+  },
+  "optKeyOk": {
+    "message": "key 可用{quota}。已保存，打开着的 arXiv 页面里没查成功的徽标会自动重查。"
+  },
+  "optQuota": {
+    "message": "：每天额度 {limit} 美元，今天还剩 {remaining} 美元"
+  },
+  "optNotSaved": {
+    "message": "{reason}。没有保存。"
+  },
+  "optErr401": {
+    "message": "OpenAlex 找不到这个 key（401）。检查是否复制完整，或者去 OpenAlex 的 Settings → API key 重新复制"
+  },
+  "optErr403": {
+    "message": "OpenAlex 拒绝了这个 key（403，{code}）。刚注册的话，先去邮箱点激活链接"
+  },
+  "optErr429": {
+    "message": "OpenAlex 限流（429），稍后再试：{reason}"
+  },
+  "optErrTimeout": {
+    "message": "OpenAlex 20 秒没响应，稍后再试"
+  },
+  "optCleared": {
+    "message": "已清除，回到匿名额度。"
+  },
+  "optFooter": {
+    "message": "<a href=\"https://github.com/Li-Evan/arxiv-citations/blob/main/PRIVACY.md\" target=\"_blank\" rel=\"noopener\">隐私政策</a> · 本插件与 arXiv、OpenAlex 均无关联。"
+  }
+}

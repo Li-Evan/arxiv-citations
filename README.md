@@ -1,14 +1,26 @@
-# arXiv 引用次数（Chrome 插件）
+# arXiv 引用次数 · Citation Counts for arXiv
 
-打开 arXiv 论文摘要页（`arxiv.org/abs/...`），标题右边会多一个徽标，显示这篇论文被引用了多少次。点徽标能打开 OpenAlex 上「引用了这篇论文的论文」列表。
+**English:** A Chrome extension that shows how many times an arXiv paper has been cited, right next to its title on the abstract page. Counts come from [OpenAlex](https://openalex.org), with preprint and published versions merged. It sends only the paper's arXiv ID and title to OpenAlex, and only after you agree on its welcome page. See the [privacy policy](PRIVACY.md). The interface is in English, or Simplified Chinese when Chrome is set to it. Not affiliated with arXiv or OpenAlex.
+
+---
+
+打开 arXiv 论文摘要页（`arxiv.org/abs/...`），标题右边会多一个徽标，显示这篇论文被引用了多少次。点徽标能打开 OpenAlex 上「引用了这篇论文的论文」列表。界面跟着浏览器语言走：简体中文显示中文，其他语言显示英文。
 
 ## 安装
+
+上架 Chrome 应用商店之前，用开发者模式加载：
 
 1. Chrome 地址栏打开 `chrome://extensions`
 2. 右上角打开「开发者模式」
 3. 点「加载已解压的扩展程序」，选这个 `arxiv-citations` 文件夹
 
+装好后会自动打开一个说明页，写清楚插件会发送哪些数据。点「同意并开始使用」之前，插件不发任何请求，arXiv 页面上的徽标只显示「被引 · 点击启用」。
+
 改了代码以后，回到 `chrome://extensions` 点这个插件的刷新按钮，再刷新 arXiv 页面。
+
+## 隐私
+
+插件只把论文的 arXiv 编号和标题发给 OpenAlex，作者名只在本机比对，作者没有服务器，不收集任何数据。完整说明见 [PRIVACY.md](PRIVACY.md)。设置页可以随时撤回同意，撤回后立刻停止请求，并清除本机缓存的查询结果。
 
 ## 设置：填 OpenAlex key（可选）
 
@@ -57,6 +69,7 @@ OpenAlex 的 429 提示说，用免费 key（每天 1 美元额度）可以不�
 
 | 显示 | 意思 | 点击 |
 |------|------|------|
+| `被引 · 点击启用` | 还没同意发送数据，一个请求都没发 | 打开说明页 |
 | `被引 …` | 正在查 | — |
 | `被引 253,567 合并 2 个版本` | 查到了 | 打开引用列表 |
 | `被引 13,192 查找其他版本…` | 已按编号查到数字，正在后台找同一论文的其他发表版本 | 打开引用列表 |
@@ -70,19 +83,33 @@ OpenAlex 的 429 提示说，用免费 key（每天 1 美元额度）可以不�
 node test/e2e.mjs
 ```
 
-脚本用本机 Playwright 缓存里的 Chrome for Testing，无头加载插件，检查 18 种情况。
+脚本用本机 Playwright 缓存里的 Chrome for Testing，无头加载插件，检查 29 种情况。
 
+- 文案：中英两份文案条目一致，代码里用到的每条文案都存在。
+- 同意流程：装好后自动打开说明页；同意前不发请求、徽标提示启用；点徽标打开说明页；点同意后打开着的页面自动查询；撤回同意后清空缓存、所有页面回到「点击启用」。
 - 徽标：新论文、刷新走缓存、2611.15754（曾经一直转圈）、ResNet 合并版本、编号未收录时按标题找到其他版本、先出数字再后台合并、搜索 429 后自动重试、搜索长时间限流时标未合并、完全查不到、编号查询 429、点击重试。
-- 设置页：能打开、假 key 被真实 OpenAlex 以 401 拒绝且不保存、匿名限流时徽标提示去填 key、能用的 key 保存后显示额度和尾号、保存后打开着的页面自动重查且请求都带 key 而网址里没有 key、已保存的 key 失效时徽标提示、清除 key。
+- 设置页：假 key 被真实 OpenAlex 以 401 拒绝且不保存、匿名限流时徽标提示去填 key、能用的 key 保存后显示额度和尾号、保存后打开着的页面自动重查且请求都带 key 而网址里没有 key、已保存的 key 失效时徽标提示、清除 key。
+- 英文界面：说明页、徽标、报错提示、设置页都是英文，页面里没有中文。macOS 上 Chrome 按系统语言挑插件文案，命令行参数改不了，所以测英文时复制一份插件并删掉 `zh_CN` 文案，Chrome 就退回默认的英文。
 
-全程不弹窗。OpenAlex 正常时约 30 秒跑完，限流时要等 Retry-After，可能要几分钟。截图默认存到系统临时目录下的 `arxiv-citations-e2e/`，可以用 `OUT_DIR` 改。
+全程不弹窗。OpenAlex 正常时约 1 分钟跑完，限流时要等 Retry-After，可能要几分钟。某一项等待超时会打印徽标当时的状态，记为失败后继续跑。截图默认存到系统临时目录下的 `arxiv-citations-e2e/`，可以用 `OUT_DIR` 改。`EXT_DIR` 可以指定要测的插件目录，上架前用它测打包产物。
 
-用真实数据的几项，引用次数会随时间变，OpenAlex 限流时也可能显示「未合并」，所以脚本只检查格式和行为，不检查具体数字；限流和查不到的情况用模拟返回测。
+## 上架 Chrome 应用商店
+
+- 打包：`sh scripts/package.sh`，产物在 `dist/`，只含插件运行需要的文件
+- 步骤：[store/PUBLISHING.md](store/PUBLISHING.md)
+- 后台每一栏的填写内容：[store/listing.md](store/listing.md)
+- 图标和宣传图：`node store/make-assets.mjs`；商店截图：`node store/make-screenshots.mjs`
 
 ## 文件
 
-- `manifest.json`：插件清单，只要 `storage` 权限，只在 `arxiv.org/abs/*` 上运行
-- `content.js`：读页面元信息、查 OpenAlex（有 key 就带上）、缓存、插入徽标
-- `options.html`、`options.js`：设置页，工具栏弹窗和「扩展程序选项」共用
-- `content.css`：徽标样式
-- `test/e2e.mjs`：端到端测试
+- `manifest.json`：插件清单，只要 `storage` 权限，内容脚本只在 `arxiv.org/abs/*` 上运行
+- `content.js`、`content.css`：读页面元信息、查 OpenAlex（有 key 就带上）、缓存、插入徽标；没同意前只显示「点击启用」
+- `background.js`：装好或升级后还没同意就打开说明页；处理徽标上的「点击启用」
+- `welcome.html`、`welcome.js`：首次使用说明和同意页
+- `options.html`、`options.js`：设置页，工具栏弹窗和「扩展程序选项」共用；同意状态、撤回同意、OpenAlex key
+- `i18n.js`、`_locales/`：中英文案，占位符写成 `{name}`
+- `page.css`：说明页和设置页共用样式
+- `icons/`：插件图标，由 `store/art/icon.svg` 导出
+- `PRIVACY.md`：隐私政策（中英文）
+- `test/e2e.mjs`、`test/browser.mjs`：端到端测试和共用的浏览器启动工具
+- `store/`：商店文案、上架步骤、出图脚本和图片
